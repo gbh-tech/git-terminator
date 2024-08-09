@@ -39,5 +39,3 @@ command
   });
 
 command.parse();
-
-// getTags("time");
