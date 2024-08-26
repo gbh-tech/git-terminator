@@ -13,11 +13,11 @@ class GitHubAuth {
 
 export class Repository {
   org: string;
-  repo: string;
+  name: string;
 
-  constructor(org: string, repo: string) {
+  constructor(org: string, name: string) {
     this.org = org,
-    this.repo = repo
+    this.name = name
   }
 }
 

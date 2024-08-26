@@ -19,11 +19,10 @@ command
     '-o, --organization <organization>',
     'GitHub Organization'
   )
-  // this should be and array
   .option(
-    '-r, --repository <repository>',
+    '-r, --repository <repository...>',
     'Minimum number of Tags to preserve',
-    ''
+    []
   )
   .option(
     '-n, --minimumTags <minimum>',
@@ -31,15 +30,14 @@ command
     '10'
   )
   .option('--dry', 'Dry run command', false)
-  // if option repo array empty run all
   .action((options) => {
     const daysUntilStale = options.time.trim();
     const org = options.organization.trim();
-    const repo = options.repository.trim();
+    const repositories = options.repository;
     const minTags = options.minimumTags.trim();
     const dry = options.dry;
 
-    terminator(daysUntilStale, org, repo, minTags, dry);
+    terminator(daysUntilStale, org, repositories, minTags, dry);
   });
 
 command.parse();

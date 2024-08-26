@@ -8,23 +8,36 @@ interface Tag {
   };
 }
 
-export interface GetTagsResponse {
+interface GetTagsResponse {
   data: Tag[];
 }
 
-export interface CommitTag {
+interface CommitTag {
   tag: string;
   date: string;
 }
 
-export const terminator = async (daysUntilStale: number, org: string, repo: string, minTags: number, dry: boolean) => {
+export const terminator = async (daysUntilStale: number, org: string, repositories: string[], minTags: number, dry: boolean) => {
   try {
     const octokit = githubConfig.auth();
-    const gitRepo = new Repository(org, repo);
+    if (repositories.length < 1) {
+      let orgRepositories = await octokit.request('GET /orgs/{org}/repos', {
+        org: org,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
+      })
+      repositories = orgRepositories.data.map(repo => repo.name);
+    }
+    for (const repo of repositories) {
+      console.log('Terminanting: %s...', repo)
+      const gitRepo = new Repository(org, repo);
 
-    const tags = await getTags(octokit, gitRepo);
-    const tagsSortedByDate = await sortTags(octokit, tags, gitRepo);
-    await deleteTags(octokit, tagsSortedByDate, daysUntilStale, gitRepo, minTags, dry);
+      const tags = await getTags(octokit, gitRepo);
+      const tagsSortedByDate = await sortTags(octokit, tags, gitRepo);
+      await deleteTags(octokit, tagsSortedByDate, daysUntilStale, gitRepo, minTags, dry);
+    }
+
   }
   catch (error) {
     console.error('Eploto:', error);
@@ -38,7 +51,7 @@ const getTags = async (octokit: Octokit, gitRepo: Repository) => {
   try {
     const tags = await octokit.request('GET /repos/{owner}/{repo}/tags', {
       owner: gitRepo.org,
-      repo: gitRepo.repo,
+      repo: gitRepo.name,
       headers: {
         'X-GitHub-Api-Version': '2022-11-28'
       }
@@ -58,7 +71,7 @@ const sortTags = async (octokit: Octokit, tags: GetTagsResponse, gitRepo: Reposi
     for (const tag of tags.data) {
       const commit = await octokit.request('GET /repos/{owner}/{repo}/commits/{ref}', {
         owner: gitRepo.org,
-        repo: gitRepo.repo,
+        repo: gitRepo.name,
         ref: tag.commit.sha,
         headers: {
           'X-GitHub-Api-Version': '2022-11-28'
@@ -90,7 +103,7 @@ const deleteTags = async (octokit: Octokit, tagsDate: CommitTag[], daysUntilStal
 
           //   await octokit.request('DELETE /repos/{owner}/{repo}/git/refs/{ref}', {
           //     owner: gitRepo.name,
-          //     repo: gitRepo.repo,
+          //     repo: gitRepo.name,
           //     ref: 'tags/'+tag.name,
           //     headers: {
           //       'X-GitHub-Api-Version': '2022-11-28'
