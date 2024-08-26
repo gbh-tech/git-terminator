@@ -1,3 +1,5 @@
+#!/usr/bin/env bun
+
 import { Command } from 'commander';
 import { terminator } from './src/utils/delete_tags';
 import { description, version, name } from './package.json';
@@ -11,12 +13,13 @@ command
   .requiredOption(
     '-t, --time <time>',
     'Time until a tag is considered stale in days',
-    365
+    '365'
   )
   .requiredOption(
     '-o, --organization <organization>',
     'GitHub Organization'
   )
+  // this should be and array
   .option(
     '-r, --repository <repository>',
     'Minimum number of Tags to preserve',
@@ -25,7 +28,7 @@ command
   .option(
     '-n, --minimumTags <minimum>',
     'Minimum number of Tags to preserve',
-    10
+    '10'
   )
   .option('--dry', 'Dry run command', false)
   // if option repo array empty run all
@@ -34,8 +37,9 @@ command
     const org = options.organization.trim();
     const repo = options.repository.trim();
     const minTags = options.minimumTags.trim();
+    const dry = options.dry;
 
-    terminator(daysUntilStale, org, repo, minTags);
+    terminator(daysUntilStale, org, repo, minTags, dry);
   });
 
 command.parse();

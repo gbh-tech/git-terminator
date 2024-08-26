@@ -1,13 +1,18 @@
 {
   "name": "terminator",
   "version": "0.1.0",
+  "description": "CLI to terminate stale Git tags",
+  "module": "command.ts",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
   "devDependencies": {
     "@types/bun": "latest",
     "commander": "^12.1.0"
   },
-  "description": "CLI to terminate stale Git tags",
-  "private": true,
-  "type": "module",
+  "peerDependencies": {
+    "typescript": "^5.5"
+  },
   "dependencies": {
     "@octokit/core": "^6.1.2"
   }
