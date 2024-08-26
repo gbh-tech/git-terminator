@@ -6,14 +6,111 @@
   "private": true,
   "license": "MIT",
   "type": "module",
+  "bin": {
+    "terminator": "./dist/command.js"
+  },
+  "scripts": {
+    "build": "bun build --target=bun ./command.ts --outdir dist/",
+    "compile": "bun build --compile ./command.ts --outfile ./dems",
+    "format": "biome format src/",
+    "format:fix": "biome format src/ --write",
+    "lint": "biome lint src/",
+    "check": "biome check src/",
+    "check:fix": "biome check src/ --apply",
+    "test": "bun test",
+    "prepare": "husky"
+  },
   "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@release-it/conventional-changelog": "^8.0.1",
     "@types/bun": "latest",
-    "commander": "^12.1.0"
+    "commander": "^12.1.0",
+    "commitlint": "^19.4.0",
+    "husky": "^9.1.5",
+    "release-it": "^17.6.0"
   },
   "peerDependencies": {
     "typescript": "^5.5"
   },
   "dependencies": {
     "@octokit/core": "^6.1.2"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "defaultIgnores": true
+  },
+  "release-it": {
+    "github": {
+      "release": false,
+      "releaseName": "v${version}"
+    },
+    "git": {
+      "commitMessage": "chore: release v${version}",
+      "tagMatch": "v[0-9]*\\.[0-9]*\\.[0-9]*",
+      "tagName": "v${version}",
+      "getLatestTagFromAllRefs": true,
+      "tagExclude": "*[-]*",
+      "push": true,
+      "release": true,
+      "pushArgs": ["--no-verify", "--follow-tags", "--force"],
+      "commitArgs": ["--no-verify"]
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": {
+          "name": "conventionalcommits",
+          "types": [
+            {
+              "type": "feat",
+              "section": "Features"
+            },
+            {
+              "type": "fix",
+              "section": "Bug Fixes"
+            },
+            {
+              "type": "chore",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "docs",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "style",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "refactor",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "perf",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "test",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "build",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "revert",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "ci",
+              "section": "Miscellaneous"
+            }
+          ]
+        },
+        "infile": "CHANGELOG.md"
+      }
+    }
   }
 }

@@ -1,0 +1,57 @@
+name: 📝 Lint
+
+on:
+  pull_request:
+
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💻 Checkout current code ref
+        uses: actions/checkout@v4
+
+      - name: 🟢 Configure Bun on runner
+        uses: oven-sh/setup-bun@v1
+
+      - name: 📦 Install package dependencies using lockfile
+        run: bun install --frozen-lockfile
+
+      - name: 🔨 Run build
+        run: bun run build
+
+      - name: 🌷 Run format, lint & check with Biome
+        run: |
+          bun run format
+          bun run lint
+          bun run check
+
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💻 Checkout current code ref
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🟢 Configure Node.js on runner
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.tool-versions'
+
+      - name: 🚧 Install dev dependencies
+        run: npm install --only=dev
+
+        # Check all commits pushed to this PR
+      - name: 👁️‍🗨️ Validate PR commits with commitlint
+        run: >- 
+          npx commitlint
+          --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}
+          --to ${{ github.event.pull_request.head.sha }}
+          --verbose
+
+      - name: 🔎 Validate PR title with commitlint
+        run: echo "${{ github.event.pull_request.title }}" | npx commitlint
