@@ -1,17 +1,17 @@
 {
-  "name": "git-terminator",
+  "name": "git-cleaner",
   "version": "0.1.0",
-  "description": "CLI to terminate stale Git tags",
+  "description": "CLI to clean stale Git resources",
   "module": "command.ts",
   "private": true,
   "license": "MIT",
   "type": "module",
   "bin": {
-    "git-terminator": "./dist/command.js"
+    "git-cleaner": "./dist/command.js"
   },
   "scripts": {
     "build": "bun build --target=bun ./command.ts --outdir dist/",
-    "compile": "bun build --compile ./command.ts --outfile ./git-terminator",
+    "compile": "bun build --compile ./command.ts --outfile ./git-cleaner",
     "format": "biome format src/",
     "format:fix": "biome format src/ --write",
     "lint": "biome lint src/",

@@ -1,4 +1,4 @@
-# git-tag-terminator
+# git-cleaner
 
 Delete Git Tags from the CLI
 
