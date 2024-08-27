@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "bun build --target=bun ./command.ts --outdir dist/",
-    "compile": "bun build --compile ./command.ts --outfile ./dems",
+    "compile": "bun build --compile ./command.ts --outfile ./terminator",
     "format": "biome format src/",
     "format:fix": "biome format src/ --write",
     "lint": "biome lint src/",
