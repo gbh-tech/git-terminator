@@ -124,13 +124,13 @@ const deleteTags = async (
 				if (dry) {
 					console.log("%s Tag will be deleted\n", tag.name);
 				} else {
-					await octokit.request('DELETE /repos/{owner}/{repo}/git/refs/{ref}', {
-					owner: gitRepo.name,
-					repo: gitRepo.name,
-					ref: 'tags/'+tag.name,
-					headers: {
-						'X-GitHub-Api-Version': '2022-11-28'
-					}
+					await octokit.request("DELETE /repos/{owner}/{repo}/git/refs/{ref}", {
+						owner: gitRepo.name,
+						repo: gitRepo.name,
+						ref: "tags/" + tag.name,
+						headers: {
+							"X-GitHub-Api-Version": "2022-11-28",
+						},
 					});
 					console.log("%s Tag deleted\n", tag.name);
 				}
