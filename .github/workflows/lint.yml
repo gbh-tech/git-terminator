@@ -37,10 +37,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 🟢 Configure Node.js on runner
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.tool-versions'
+      - name: 🟢 Configure Bun on runner
+        uses: oven-sh/setup-bun@v1
 
       - name: 🚧 Install dev dependencies
         run: npm install --only=dev
