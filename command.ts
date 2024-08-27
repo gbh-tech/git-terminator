@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import { Command } from 'commander';
-import { terminator } from './src/utils/delete_tags';
+import { terminator } from './src/utils/delete-tags';
 import { description, version, name } from './package.json';
 
 const command = new Command();

@@ -59,8 +59,6 @@ export const terminator = async (
 	}
 };
 
-// This func could be added as methods of my githubConfig class
-// Need test
 const getTags = async (octokit: Octokit, gitRepo: Repository) => {
 	try {
 		const tags = await octokit.request("GET /repos/{owner}/{repo}/tags", {
@@ -77,7 +75,6 @@ const getTags = async (octokit: Octokit, gitRepo: Repository) => {
 	}
 };
 
-// Need test
 const sortTags = async (
 	octokit: Octokit,
 	tags: GetTagsResponse,
@@ -124,7 +121,6 @@ const deleteTags = async (
 			const tagDaysSinceCreated =
 				(new Date().getTime() - new Date(tag.date).getTime()) / 86400000;
 			if (tagDaysSinceCreated > daysUntilStale) {
-				// These console logs are for Testing
 				if (dry) {
 					console.log(tag);
 					console.log("Stale\n\n");
@@ -142,8 +138,6 @@ const deleteTags = async (
 					//   console.log("%s Tag deleted!", tag.name)
 					// }
 				}
-			} else {
-				console.log(tag);
 			}
 		}
 	} catch (error) {

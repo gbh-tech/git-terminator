@@ -1,5 +1,5 @@
 {
-  "name": "terminator",
+  "name": "git-terminator",
   "version": "0.1.0",
   "description": "CLI to terminate stale Git tags",
   "module": "command.ts",
@@ -7,11 +7,11 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "terminator": "./dist/command.js"
+    "git-terminator": "./dist/command.js"
   },
   "scripts": {
     "build": "bun build --target=bun ./command.ts --outdir dist/",
-    "compile": "bun build --compile ./command.ts --outfile ./terminator",
+    "compile": "bun build --compile ./command.ts --outfile ./git-terminator",
     "format": "biome format src/",
     "format:fix": "biome format src/ --write",
     "lint": "biome lint src/",
@@ -25,7 +25,6 @@
     "@commitlint/config-conventional": "^19.2.2",
     "@release-it/conventional-changelog": "^8.0.1",
     "@types/bun": "latest",
-    "commander": "^12.1.0",
     "commitlint": "^19.4.0",
     "husky": "^9.1.5",
     "release-it": "^17.6.0"
@@ -34,13 +33,19 @@
     "typescript": "^5.5"
   },
   "dependencies": {
-    "@octokit/core": "^6.1.2"
+    "@octokit/core": "^6.1.2",
+    "commander": "^12.1.0"
   },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
     ],
     "defaultIgnores": true
+  },
+  "renovate": {
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": ["config:recommended"],
+    "prConcurrentLimit": 2
   },
   "release-it": {
     "github": {
