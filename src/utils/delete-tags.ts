@@ -13,7 +13,7 @@ interface GetTagsResponse {
 }
 
 interface CommitTag {
-	tag: string;
+	name: string;
 	date: string;
 }
 
@@ -95,7 +95,7 @@ const sortTags = async (
 				},
 			);
 			const committer = commit.data.commit.committer ?? { date: "n/a" };
-			commitTags.push({ tag: tag.name, date: committer.date ?? "" });
+			commitTags.push({ name: tag.name, date: committer.date ?? "" });
 		}
 		return commitTags.sort(
 			(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
@@ -122,21 +122,17 @@ const deleteTags = async (
 				(new Date().getTime() - new Date(tag.date).getTime()) / 86400000;
 			if (tagDaysSinceCreated > daysUntilStale) {
 				if (dry) {
-					console.log(tag);
-					console.log("Stale\n\n");
+					console.log("%s Tag will be deleted\n", tag.name);
 				} else {
-					console.log("WIP\n\n");
-
-					//   await octokit.request('DELETE /repos/{owner}/{repo}/git/refs/{ref}', {
-					//     owner: gitRepo.name,
-					//     repo: gitRepo.name,
-					//     ref: 'tags/'+tag.name,
-					//     headers: {
-					//       'X-GitHub-Api-Version': '2022-11-28'
-					//     }
-					//   });
-					//   console.log("%s Tag deleted!", tag.name)
-					// }
+					await octokit.request('DELETE /repos/{owner}/{repo}/git/refs/{ref}', {
+					owner: gitRepo.name,
+					repo: gitRepo.name,
+					ref: 'tags/'+tag.name,
+					headers: {
+						'X-GitHub-Api-Version': '2022-11-28'
+					}
+					});
+					console.log("%s Tag deleted\n", tag.name);
 				}
 			}
 		}
