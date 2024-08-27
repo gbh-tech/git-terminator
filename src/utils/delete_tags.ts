@@ -1,5 +1,5 @@
 import type { Octokit } from "@octokit/core";
-import { githubConfig, Repository } from "../config/github";
+import { Repository, githubConfig } from "../config/github";
 
 interface Tag {
 	name: string;
@@ -26,16 +26,19 @@ export const terminator = async (
 ) => {
 	try {
 		const octokit = githubConfig.auth();
+		let repoList = repositories;
+
 		if (repositories.length < 1) {
-			let orgRepositories = await octokit.request("GET /orgs/{org}/repos", {
+			const orgRepositories = await octokit.request("GET /orgs/{org}/repos", {
 				org: org,
 				headers: {
 					"X-GitHub-Api-Version": "2022-11-28",
 				},
 			});
-			repositories = orgRepositories.data.map((repo) => repo.name);
+
+			repoList = orgRepositories.data.map((repo) => repo.name);
 		}
-		for (const repo of repositories) {
+		for (const repo of repoList) {
 			console.log("Terminanting: %s...", repo);
 			const gitRepo = new Repository({ org: org, name: repo });
 
@@ -81,7 +84,7 @@ const sortTags = async (
 	gitRepo: Repository,
 ) => {
 	try {
-		let commitTags: CommitTag[] = [];
+		const commitTags: CommitTag[] = [];
 		for (const tag of tags.data) {
 			const commit = await octokit.request(
 				"GET /repos/{owner}/{repo}/commits/{ref}",
@@ -94,7 +97,7 @@ const sortTags = async (
 					},
 				},
 			);
-			let committer = commit.data.commit.committer ?? { date: "n/a" };
+			const committer = commit.data.commit.committer ?? { date: "n/a" };
 			commitTags.push({ tag: tag.name, date: committer.date ?? "" });
 		}
 		return commitTags.sort(
@@ -116,8 +119,9 @@ const deleteTags = async (
 ) => {
 	try {
 		tagsDate.splice(0, minTags);
-		tagsDate.forEach(async (tag) => {
-			var tagDaysSinceCreated =
+
+		for (const tag of tagsDate) {
+			const tagDaysSinceCreated =
 				(new Date().getTime() - new Date(tag.date).getTime()) / 86400000;
 			if (tagDaysSinceCreated > daysUntilStale) {
 				// These console logs are for Testing
@@ -141,7 +145,7 @@ const deleteTags = async (
 			} else {
 				console.log(tag);
 			}
-		});
+		}
 	} catch (error) {
 		console.error("Could not delete tags from repo: %s", error);
 		process.exit(1);
