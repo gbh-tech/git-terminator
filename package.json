@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "description": "CLI to clean stale Git resources",
   "module": "command.ts",
-  "private": true,
   "license": "MIT",
+  "private": true,
   "type": "module",
   "bin": {
     "git-cleaner": "./dist/command.js"
@@ -16,7 +16,7 @@
     "format:fix": "biome format src/ --write",
     "lint": "biome lint src/",
     "check": "biome check src/",
-    "check:fix": "biome check src/ --apply",
+    "check:fix": "biome check src/ --write",
     "test": "bun test",
     "prepare": "husky"
   },
@@ -33,7 +33,7 @@
     "typescript": "^5.5"
   },
   "dependencies": {
-    "@octokit/core": "^6.1.2",
+    "@octokit/rest": "^21.0.2",
     "commander": "^12.1.0"
   },
   "commitlint": {
@@ -44,13 +44,18 @@
   },
   "renovate": {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": ["config:recommended"],
+    "extends": [
+      "config:recommended"
+    ],
     "prConcurrentLimit": 2
   },
   "release-it": {
     "github": {
-      "release": false,
-      "releaseName": "v${version}"
+      "release": true,
+      "releaseName": "v${version}",
+      "assets": [
+        "dist/*tar.gz"
+      ]
     },
     "git": {
       "commitMessage": "chore: release v${version}",
@@ -60,8 +65,14 @@
       "tagExclude": "*[-]*",
       "push": true,
       "release": true,
-      "pushArgs": ["--no-verify", "--follow-tags", "--force"],
-      "commitArgs": ["--no-verify"]
+      "pushArgs": [
+        "--no-verify",
+        "--follow-tags",
+        "--force"
+      ],
+      "commitArgs": [
+        "--no-verify"
+      ]
     },
     "plugins": {
       "@release-it/conventional-changelog": {
