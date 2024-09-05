@@ -21,8 +21,7 @@ command
   )
   .option(
     '-r, --repository <repository...>',
-    'Minimum number of Tags to preserve',
-    []
+    'Target repositories'
   )
   .option(
     '-n, --minimumTags <minimum>',
