@@ -2,6 +2,8 @@ name: 📝 Lint
 
 on:
   pull_request:
+    branches:
+      - main
 
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.head_ref || github.ref }}'

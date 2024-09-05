@@ -1,0 +1,46 @@
+name: 🚀 Deploy to S3
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  BUCKET: 's3://gbh-utils'
+  NAME: 'git-cleaner'
+
+jobs:
+  deploy-s3:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [linux-x64, linux-arm64, windows-x64, darwin-arm64, darwin-x64]
+    steps:
+      - name: 💻 Checkout current code ref
+        uses: actions/checkout@v4
+
+      - name: 🟢 Configure Bun on runner
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: 🔵 Install Task
+        uses: arduino/setup-task@v2
+
+      - name: 🟡 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ vars.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: 'us-east-1'
+
+      - name: 📦 Install package dependencies using lockfile
+        run: bun install --frozen-lockfile
+
+      - name: 🔨 Compile binary for supported platforms
+        run: |
+          task build
+          task compress
+
+      - name: 🚀 Upload binaries to S3
+        run: aws s3 cp ./dist ${BUCKET}/${NAME} --recursive --acl public-read

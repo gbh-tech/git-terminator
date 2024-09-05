@@ -11,16 +11,30 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.DEVOPS_USER_TOKEN }}
 
+      - name: 🟢 Configure Bun on runner
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+        
+      - name: 🔵 Install Task
+        uses: arduino/setup-task@v2
+  
       - name: 💼 Configure Git user
         run: |
           git config user.name "gbh-devops-bot"
           git config user.email "devops@gbh.com.do"
 
       - name: 📦 Install package dependencies using lockfile
-        run: npm ci
+        run: bun install --frozen-lockfile
 
-      - name: 🚀 Run new version for production
-        run: npx release-it --ci
+      - name: 🔨 Compile binary for supported platforms
+        run: |
+          task build
+          task compress
+
+      - name: 🚀 Release a new version
+        run: bun release-it --ci
         env:
           GITHUB_TOKEN: ${{ secrets.DEVOPS_USER_TOKEN }}
