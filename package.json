@@ -1,0 +1,132 @@
+{
+  "name": "git-cleaner",
+  "version": "0.1.0",
+  "description": "CLI to clean stale Git resources",
+  "module": "command.ts",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "git-cleaner": "./dist/command.js"
+  },
+  "scripts": {
+    "build": "bun build --target=bun ./command.ts --outdir dist/",
+    "compile": "bun build --compile ./command.ts --outfile ./git-cleaner",
+    "format": "biome format src/",
+    "format:fix": "biome format src/ --write",
+    "lint": "biome lint src/",
+    "check": "biome check src/",
+    "check:fix": "biome check src/ --write",
+    "test": "bun test",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@release-it/conventional-changelog": "^8.0.1",
+    "@types/bun": "latest",
+    "commitlint": "^19.4.0",
+    "husky": "^9.1.5",
+    "release-it": "^17.6.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.5"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.0.2",
+    "commander": "^12.1.0"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "defaultIgnores": true
+  },
+  "renovate": {
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+      "config:recommended"
+    ],
+    "prConcurrentLimit": 2
+  },
+  "release-it": {
+    "github": {
+      "release": true,
+      "releaseName": "v${version}",
+      "assets": [
+        "dist/*tar.gz"
+      ]
+    },
+    "git": {
+      "commitMessage": "chore: release v${version}",
+      "tagMatch": "v[0-9]*\\.[0-9]*\\.[0-9]*",
+      "tagName": "v${version}",
+      "getLatestTagFromAllRefs": true,
+      "tagExclude": "*[-]*",
+      "push": true,
+      "release": true,
+      "pushArgs": [
+        "--no-verify",
+        "--follow-tags",
+        "--force"
+      ],
+      "commitArgs": [
+        "--no-verify"
+      ]
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": {
+          "name": "conventionalcommits",
+          "types": [
+            {
+              "type": "feat",
+              "section": "Features"
+            },
+            {
+              "type": "fix",
+              "section": "Bug Fixes"
+            },
+            {
+              "type": "chore",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "docs",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "style",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "refactor",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "perf",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "test",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "build",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "revert",
+              "section": "Miscellaneous"
+            },
+            {
+              "type": "ci",
+              "section": "Miscellaneous"
+            }
+          ]
+        },
+        "infile": "CHANGELOG.md"
+      }
+    }
+  }
+}
