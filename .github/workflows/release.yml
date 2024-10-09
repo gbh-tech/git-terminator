@@ -14,7 +14,7 @@ jobs:
           token: ${{ secrets.DEVOPS_USER_TOKEN }}
 
       - name: 🟢 Configure Bun on runner
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
         

@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 🟢 Configure Bun on runner
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
 
       - name: 📦 Install package dependencies using lockfile
         run: bun install --frozen-lockfile
@@ -40,7 +40,7 @@ jobs:
           fetch-depth: 0
 
       - name: 🟢 Configure Bun on runner
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
 
       - name: 🚧 Install dev dependencies
         run: npm install --only=dev
